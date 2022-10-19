@@ -47,6 +47,10 @@ def comparaArquivos():
                     logging.info(f'Incluindo na Ação {chave} o usuário: {usuario}.')
         else:
             logging.info(f'Não possui usuário para cadastrar na acão {chave}')
+            for usuario in listaArquivoBanco:
+                if usuario:
+                    logging.info(f'deletando o {usuario} da {chave}.')  
+                    cb.deletaUsuarioNaAcao(usuario, chave)
 
     logging.info('comparaArquivos: finalizado')
 
