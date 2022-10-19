@@ -12,11 +12,10 @@ def atualiza_usuarios_por_acao():
     consultaApi.verificaNaApiIDUsuarioPorAcao()
     utils.montaEComparaArquivo()
 
-
-
 schedule.every().monday.at('09:00').do(atualiza_usuarios_por_acao)
-
 
 while True:
     schedule.run_pending()
-    time.sleep(300)
+    time.sleep(900)
+
+
