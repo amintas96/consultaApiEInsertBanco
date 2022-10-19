@@ -1,16 +1,19 @@
 import Repository as cb
+import logging
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s',filename='GerenciadorIdsElegiveis.log', level=logging.INFO)
 
 def montaArquivoDeComparacao():
-    print('Iniciando automação : montaArquivoDeComparacao')
+    logging.info('Iniciando automacao : montaArquivoDeComparacao')
     arquivo = open('ArquivoBanco.txt','w')
     listaAcoesBanco = cb.consultaAcoes()
     for acao in listaAcoesBanco:
         listaDeUsuarios = cb.consultaUsuariosInTbBaixaUsuariosPorAcoes(acao)
         arquivo.write(f'{acao} =  {listaDeUsuarios}' + '\n')
-
-    return print('montaArquivoDeComparacao: Concluído!')
+    logging.info('montaArquivoDeComparacao: Concluído!')
 
 def converteToDict(usuariosElegiveis, acoesUsuarios):
+    logging.info(f'iniciando automacao: converteToDict')
     dictAeU = {}
     for linha in acoesUsuarios:
         listaUsuarios = []
@@ -22,7 +25,7 @@ def converteToDict(usuariosElegiveis, acoesUsuarios):
     return dictAeU
 
 def comparaArquivos():
-    print('iniciando automacao: comparaArquivos')
+    logging.info(f'iniciando automacao: comparaArquivos')
     listaUsuariosElegiveis = cb.consultaUsuariosElegiveis()
     arquivoAtualizado = open('arquivoAtualizado.txt', 'r')
     aquivoBanco = open('ArquivoBanco.txt', 'r')
@@ -36,18 +39,20 @@ def comparaArquivos():
         if len(usuariosAtualizados) != 0:                                                         
             for usuario in listaArquivoBanco:
                 if usuario not in usuariosAtualizados:                                      
-                    print(f'deletando o {usuario} da {chave}.')                             
+                    logging.info(f'deletando o {usuario} da {chave}.')                             
                     cb.deletaUsuarioNaAcao(usuario, chave)
             for usuario in usuariosAtualizados:
                 if usuario not in listaArquivoBanco:
                     cb.insertTotbBaixaUsuariosPorAcoes(chave, usuario)
-                    print(f'Incluindo na Ação {chave} o usuário: {usuario}.')
+                    logging.info(f'Incluindo na Ação {chave} o usuário: {usuario}.')
         else:
-            print(f'Não possui usuário para cadastrar na acão {chave}')
+            logging.info(f'Não possui usuário para cadastrar na acão {chave}')
 
-    print('comparaArquivos: finalizado')
+    logging.info('comparaArquivos: finalizado')
 
 def montaEComparaArquivo():
+    logging.info('Iniciando automacao : montaArquivoDeComparacao')
     montaArquivoDeComparacao()
     comparaArquivos()
-    print('done')
+    logging.info('done')
+

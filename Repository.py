@@ -1,8 +1,12 @@
 import pymssql
+import logging
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s',filename='GerenciadorIdsElegiveis.log', level=logging.INFO)
 
 bancoAtual = 2
 
 def conectaBanco(banco):    
+    logging.info(f'Iniciando automação: conectaBanco')
     if banco == 1:
         try:
             server = '10.36.0.93'
@@ -13,7 +17,7 @@ def conectaBanco(banco):
 
             return conn
         except ConnectionError as e:
-            print(f'error: {e}')
+            logging.warning(f'error: {e}')
 
     elif banco == 2:
         try:
@@ -24,12 +28,13 @@ def conectaBanco(banco):
             conn = pymssql.connect(server, username, password, database)
             return conn
         except ConnectionError as e:
-            print(f'error: {e}')
+            logging.warning(f'error: {e}')
 
     else:
-        print('parametro errado')
+        logging.warning(f'parametro errado')
 
 def consultaAcoes():
+    logging.info(f'Iniciando automação: consultaAcoes')
     conn = conectaBanco(1)
     cursor = conn.cursor()
     listaDeAcoes = []
@@ -41,6 +46,7 @@ def consultaAcoes():
     return listaDeAcoes
 
 def consultaUsuariosElegiveis():
+    logging.info(f'Iniciando automação: consultaUsuariosElegiveis')
     conn = conectaBanco(1)
     cursor = conn.cursor()
     listaUsuariosElegiveis = []
@@ -53,6 +59,7 @@ def consultaUsuariosElegiveis():
     return listaUsuariosElegiveis
 
 def consultaSeExisteAcao(acao):
+    logging.info(f'Iniciando automação: consultaSeExisteAcao')
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
     cursor.execute(f""" select upa.acao_id from tbBaixaUsuariosPorAcoes upa (nolock)
@@ -68,6 +75,8 @@ def consultaSeExisteAcao(acao):
         return True
 
 def consultaSeExisteUsuario(acao, usuario):
+    logging.info(f'Iniciando automação: consultaSeExisteUsuario')
+
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
     cursor.execute(f""" 
@@ -85,6 +94,7 @@ def consultaSeExisteUsuario(acao, usuario):
         return True
 
 def consultaIdUsuarioByUserDigito(usuario):
+    logging.info(f'Iniciando automação: consultaIdUsuarioByUserDigito')
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
 
@@ -95,12 +105,13 @@ def consultaIdUsuarioByUserDigito(usuario):
     linha = cursor.fetchone()
     if not linha:
         conn.close()
-        print('Id não existe')
+        logging.info('Id não existe')
     else:
         conn.close()
         return linha[0]
 
 def consultaIdAcaoByNomeAcao(acao):
+    logging.info(f'Iniciando automação: consultaIdAcaoByNomeAcao')
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
     cursor.execute(f"""
@@ -108,12 +119,13 @@ def consultaIdAcaoByNomeAcao(acao):
     linha = cursor.fetchone()
     if not linha:
         conn.close()
-        print('Id não existe')
+        logging.info('Id não existe')
     else:
         conn.close()
         return linha[0]
 
 def consultaOrg(code):
+    logging.info(f'Iniciando automação: consultaOrg')
     conn = conectaBanco(1)
     cursor = conn.cursor()
     cursor.execute(f"""SELECT TOP (1) ORG FROM [DB_AUTOMACAO].[dbo].[tbASD002Importacao] (nolock) where code = '{code}'""")
@@ -122,6 +134,7 @@ def consultaOrg(code):
         return linha[0]
 
 def insertTotbBaixaUsuariosPorAcoes(acao_id, usuario_id):
+    logging.info(f'Iniciando automação: insertTotbBaixaUsuariosPorAcoes')
     acao_id = consultaIdAcaoByNomeAcao(acao_id)
     usuario_id = consultaIdUsuarioByUserDigito(usuario_id)
     conn = conectaBanco(bancoAtual)
@@ -130,6 +143,7 @@ def insertTotbBaixaUsuariosPorAcoes(acao_id, usuario_id):
     conn.commit()
 
 def consultaAcaoInTbBaixaUsuariosPorAcoes():
+    logging.info(f'Iniciando automação: consultaAcaoInTbBaixaUsuariosPorAcoes')
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
     cursor.execute("""select distinct ae.acao from tbBaixaUsuariosPorAcoes(nolock) upa
@@ -141,6 +155,7 @@ def consultaAcaoInTbBaixaUsuariosPorAcoes():
     return listaDeAcoes
 
 def consultaUsuariosInTbBaixaUsuariosPorAcoes(acao):
+    logging.info(f'Iniciando automação: consultaUsuariosInTbBaixaUsuariosPorAcoes')
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
     cursor.execute(f"""select ue.usuario from tbBaixaUsuariosPorAcoes upa (nolock) 
@@ -154,7 +169,7 @@ def consultaUsuariosInTbBaixaUsuariosPorAcoes(acao):
     return listaUsuarios
 
 def deletaUsuarioNaAcao(usuario, acao):
-
+    logging.info(f'Iniciando automação: deletaUsuarioNaAcao')
     conn = conectaBanco(bancoAtual)
     cursor = conn.cursor()
     usuario = consultaIdUsuarioByUserDigito(usuario)

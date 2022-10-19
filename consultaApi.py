@@ -1,7 +1,12 @@
 import requests
 import Repository
+import logging
+
+logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s',filename='GerenciadorIdsElegiveis.log', level=logging.INFO)
+
 
 def verificaNaApiIDUsuarioPorAcao():
+    logging.info(f'Iniciando automação: verificaNaApiIDUsuarioPorAcao')
     idElegiveisCallink = Repository.consultaUsuariosElegiveis()
     acoesElegiveis = Repository.consultaAcoes() 
     dictIdsElegiveisPorAcoes = {}
@@ -23,11 +28,11 @@ def verificaNaApiIDUsuarioPorAcao():
             dictIdsElegiveisPorAcoes[acao] = listaDeIdElegiveisNaAcao
             dictIdsPorAcoes[acao] = listaDeTodosOsIds
             salva2.write(f'{acao} = {listaDeTodosOsIds}' + '\n')
-            print(f'{acao} =  {listaDeIdElegiveisNaAcao}')
+            logging.info(f'{acao} =  {listaDeIdElegiveisNaAcao}')
             salva.write(f'{acao} =  {listaDeIdElegiveisNaAcao}' + '\n')
         except:
-            print(f'falha com o código, {acao}')
+            logging.warning(f'falha com o código, {acao}')
 
-    print('done')
+    logging.info('verificaNaApiIDUsuarioPorAcao finalizado')
 
 
