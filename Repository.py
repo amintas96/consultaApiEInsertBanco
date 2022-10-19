@@ -6,7 +6,6 @@ logging.basicConfig(format='%(levelname)s:%(asctime)s %(message)s',filename='Ger
 bancoAtual = 2
 
 def conectaBanco(banco):    
-    logging.info(f'Iniciando automação: conectaBanco')
     if banco == 1:
         try:
             server = '10.36.0.93'

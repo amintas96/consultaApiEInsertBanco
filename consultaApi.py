@@ -16,6 +16,7 @@ def verificaNaApiIDUsuarioPorAcao():
     for acao in acoesElegiveis:
         try:
             code = Repository.consultaOrg(acao)
+            logging.info(f'verificaNaApiIDUsuarioPorAcao: verificando a acao: {acao}')
             listaDeIdElegiveisNaAcao = []
             listaDeTodosOsIds = []
             r = requests.get(f'http://10.36.0.63:8099/pcomm/pcomm-consulta-asqa/{acao}&{code}')
